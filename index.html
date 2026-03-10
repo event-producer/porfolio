@@ -44,17 +44,31 @@ color:#94a3b8
 }
 
 .hero-stats{
-margin-top:40px;
 display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:20px;
-max-width:900px;
+grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+gap:30px;
+max-width:1100px;
+margin:40px auto;
 }
 
 .stat{
-background:#0f172a;
-padding:20px;
-border-radius:16px;
+background:#121826;
+padding:30px;
+border-radius:14px;
+text-align:center;
+transition:all 0.3s ease;
+opacity:0;
+transform:translateY(30px);
+}
+
+.stat.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+.stat:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 30px rgba(79,209,255,0.25);
 }
 
 .stat-number{
@@ -334,5 +348,39 @@ elements.forEach(el=>observer.observe(el))
 
 </script>
 
+<script>
+const stats = document.querySelectorAll('.stat-number');
+
+stats.forEach(stat => {
+let target = parseInt(stat.innerText);
+let count = 0;
+
+let update = () => {
+count += Math.ceil(target / 40);
+if(count >= target){
+stat.innerText = target + "+";
+}
+else{
+stat.innerText = count;
+requestAnimationFrame(update);
+}
+}
+
+update();
+});
+</script>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if(entry.isIntersecting){
+entry.target.classList.add('visible');
+}
+});
+});
+
+document.querySelectorAll('.stat').forEach(el => observer.observe(el));
+</script>
+  
 </body>
 </html>
